@@ -9,7 +9,7 @@ export class SingnUpInput {
 
   @IsNotEmpty()
   @Field(() => String)
-  fullname: string;
+  fullName: string;
 
   @MinLength(6)
   @Field(() => String)

@@ -52,6 +52,6 @@ input UpdateItemInput {
 
 input SingnUpInput {
   email: String!
-  fullname: String!
+  fullName: String!
   password: String!
 }
