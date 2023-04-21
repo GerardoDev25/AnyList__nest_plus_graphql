@@ -4,7 +4,8 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import { CreateUserInput } from './dto/create-user.input';
+import * as bcrypt from 'bcrypt';
+
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 import { SingnUpInput } from 'src/auth/dto/inputs';
@@ -21,7 +22,10 @@ export class UsersService {
 
   async create(singnUpInput: SingnUpInput): Promise<User> {
     try {
-      const newUser = this.usersRepository.create(singnUpInput);
+      const newUser = this.usersRepository.create({
+        ...singnUpInput,
+        password: bcrypt.hashSync(singnUpInput.password, 10),
+      });
       return await this.usersRepository.save(newUser);
     } catch (error) {
       this.handleDBError(error);
