@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
+
 import { CreateItemInput, UpdateItemInput } from './dto';
 import { Item } from './entities/item.entity';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -38,7 +39,10 @@ export class ItemsService {
     return this.itemRepository.save(item);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} item`;
+  async remove(id: string): Promise<Item> {
+    // todo soft delete integration referencial
+    const item = await this.findOne(id);
+    await this.itemRepository.remove(item);
+    return { ...item, id };
   }
 }
