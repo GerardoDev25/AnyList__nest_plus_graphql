@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
@@ -38,9 +39,14 @@ export class UsersService {
 
   async findOneByEmail(email: string): Promise<User> {
     try {
-      return this.usersRepository.findOneByOrFail({ email });
+      return await this.usersRepository.findOneByOrFail({ email });
     } catch (error) {
-      this.handleDBError(error);
+      throw new NotFoundException(`${email} not found`);
+
+      // this.handleDBError({
+      //   code: 'error-01',
+      //   detail: `${email} not found`,
+      // });
     }
   }
 
@@ -54,7 +60,7 @@ export class UsersService {
 
   private handleDBError(error: any): never {
     this.looger.error(error);
-    if (error.code === '23505') {
+    if (error.code === '23505' || error.code === 'error-01') {
       throw new BadRequestException(error.detail.replace('key ', ''));
     }
     throw new InternalServerErrorException('please check server logs');
