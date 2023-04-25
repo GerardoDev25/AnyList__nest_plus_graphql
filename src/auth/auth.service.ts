@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { LoginInput, SingnUpInput } from './dto/inputs';
@@ -41,6 +45,20 @@ export class AuthService {
   }
 
   revalidateToken(user: User): AuthResponse {
+    console.log(user);
     throw new Error('Method not implemented.');
+  }
+
+  async validateUser(id: string): Promise<User> {
+    const user = await this.usersService.findById(id);
+
+    if (!user.isActive) {
+      throw new UnauthorizedException(
+        `user is not active please talk with an admin`,
+      );
+    }
+
+    delete user.password;
+    return user;
   }
 }
