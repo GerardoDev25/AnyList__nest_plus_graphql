@@ -4,19 +4,24 @@ import * as bcrypt from 'bcrypt';
 import { LoginInput, SingnUpInput } from './dto/inputs';
 import { AuthResponse } from './types/auth-response.type';
 import { UsersService } from 'src/users/users.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  private getToken(userId: string): string {
+    return this.jwtService.sign({ id: userId });
+  }
 
   async signup(singnUpInput: SingnUpInput): Promise<AuthResponse> {
     const user = await this.usersService.create(singnUpInput);
 
-    // todo crear token
-    const token = '1234';
-
     return {
-      token,
+      token: this.getToken(user.id),
       user,
     };
   }
@@ -28,9 +33,8 @@ export class AuthService {
       throw new BadRequestException(`Email or password incorrect`);
     }
 
-    // todo token
     return {
-      token: '123',
+      token: this.getToken(user.id),
       user,
     };
   }
