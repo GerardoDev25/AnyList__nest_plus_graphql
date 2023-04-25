@@ -5,6 +5,8 @@ import { AuthService } from './auth.service';
 import { SingnUpInput, LoginInput } from './dto/inputs';
 import { AuthResponse } from './types/auth-response.type';
 import { JwtAuthGuard } from './guards/jwt.guard';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { User } from 'src/users/entities/user.entity';
 
 @Resolver()
 export class AuthResolver {
@@ -26,7 +28,8 @@ export class AuthResolver {
 
   @Query(() => AuthResponse, { name: 'revalidate' })
   @UseGuards(JwtAuthGuard)
-  revalidateToken(): AuthResponse {
+  revalidateToken(@CurrentUser() user: User): AuthResponse {
+    console.log('revaldate token', user);
     throw new UnauthorizedException('not auth');
     // return this.authService.revalidateToken(user);
   }
