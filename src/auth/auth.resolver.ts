@@ -1,7 +1,10 @@
+import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+
 import { AuthService } from './auth.service';
 import { SingnUpInput, LoginInput } from './dto/inputs';
 import { AuthResponse } from './types/auth-response.type';
+import { JwtAuthGuard } from './guards/jwt.guard';
 
 @Resolver()
 export class AuthResolver {
@@ -21,8 +24,10 @@ export class AuthResolver {
     return this.authService.login(loginInput);
   }
 
-  // @Query(() => String, { name: 'revalidate' })
-  // async revalidateToken(): Promise<any> {
-  //   // return this.authService.revalidateToken();
-  // }
+  @Query(() => AuthResponse, { name: 'revalidate' })
+  @UseGuards(JwtAuthGuard)
+  revalidateToken(): AuthResponse {
+    throw new UnauthorizedException('not auth');
+    // return this.authService.revalidateToken(user);
+  }
 }
