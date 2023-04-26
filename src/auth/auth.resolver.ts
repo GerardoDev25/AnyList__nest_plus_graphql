@@ -30,7 +30,6 @@ export class AuthResolver {
   @UseGuards(JwtAuthGuard)
   revalidateToken(@CurrentUser() user: User): AuthResponse {
     console.log('revaldate token', user);
-    throw new UnauthorizedException('not auth');
-    // return this.authService.revalidateToken(user);
+    return this.authService.revalidateToken(user);
   }
 }

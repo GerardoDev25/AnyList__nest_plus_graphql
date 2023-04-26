@@ -45,8 +45,12 @@ export class AuthService {
   }
 
   revalidateToken(user: User): AuthResponse {
-    console.log(user);
-    throw new Error('Method not implemented.');
+    const token = this.getToken(user.id);
+
+    return {
+      token,
+      user,
+    };
   }
 
   async validateUser(id: string): Promise<User> {
