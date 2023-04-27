@@ -1,17 +1,26 @@
-import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
+
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { ValidRolesArgs } from './dto/args';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { ValidRoles } from 'src/auth/enums/valid-roles.enums';
 
 @Resolver(() => User)
+@UseGuards(JwtAuthGuard)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
   @Query(() => [User], { name: 'users' })
-  findAll(@Args() validRoles: ValidRolesArgs): Promise<User[]> {
-    console.log(validRoles);
+  findAll(
+    @Args() validRoles: ValidRolesArgs,
+    @CurrentUser([ValidRoles.admin, ValidRoles.userUser]) user: User,
+  ): Promise<User[]> {
+    console.log(user);
     return this.usersService.findAll(validRoles.roles);
   }
 
