@@ -3,13 +3,15 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { ValidRolesArgs } from './dto/args';
 
 @Resolver(() => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
   @Query(() => [User], { name: 'users' })
-  findAll(): Promise<User[]> {
+  findAll(@Args() validRoels: ValidRolesArgs): Promise<User[]> {
+    console.log(validRoels);
     return this.usersService.findAll();
   }
 
