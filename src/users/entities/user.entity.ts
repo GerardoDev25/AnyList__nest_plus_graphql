@@ -35,7 +35,10 @@ export class User {
   isActive: boolean;
 
   // todo mas campos
-  @ManyToOne(() => User, (user) => user.lastUpdateBy, { nullable: true })
+  @ManyToOne(() => User, (user) => user.lastUpdateBy, {
+    nullable: true,
+    lazy: true,
+  })
   @JoinColumn({ name: 'lastUpdateBy' })
   @Field(() => User, { nullable: true })
   lastUpdateBy?: User;
