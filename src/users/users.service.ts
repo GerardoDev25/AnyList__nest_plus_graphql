@@ -68,8 +68,11 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  block(id: string): Promise<User> {
-    throw new Error(`This action returns a #${id} user`);
+  async block(id: string): Promise<User> {
+    const userToBlock = await this.findById(id);
+    userToBlock.isActive = false;
+
+    return await this.usersRepository.save(userToBlock);
   }
 
   private handleDBError(error: any): never {

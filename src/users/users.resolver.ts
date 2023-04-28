@@ -18,18 +18,18 @@ export class UsersResolver {
   @Query(() => [User], { name: 'users' })
   findAll(
     @Args() validRoles: ValidRolesArgs,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @CurrentUser([ValidRoles.admin, ValidRoles.userUser]) user: User,
   ): Promise<User[]> {
-    user;
     return this.usersService.findAll(validRoles.roles);
   }
 
   @Query(() => User, { name: 'user' })
   findOne(
     @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @CurrentUser([ValidRoles.admin, ValidRoles.userUser]) user: User,
   ): Promise<User> {
-    user;
     return this.usersService.findById(id);
   }
 
@@ -38,8 +38,11 @@ export class UsersResolver {
   //   return this.usersService.update(updateUserInput.id, updateUserInput);
   // }
 
-  @Mutation(() => User)
-  blockUser(@Args('id', { type: () => ID }) id: string): Promise<User> {
+  @Mutation(() => User, { name: 'blockUser' })
+  blockUser(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+    @CurrentUser([ValidRoles.admin]) user: User,
+  ): Promise<User> {
     return this.usersService.block(id);
   }
 }
