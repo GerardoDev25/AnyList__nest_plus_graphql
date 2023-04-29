@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
-import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo';
+import { ApolloDriver } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 
@@ -9,6 +9,7 @@ import { ItemsModule } from './items/items.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -23,12 +24,32 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
       autoLoadEntities: true,
     }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRootAsync({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      playground: false,
-      plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
+      imports: [AuthModule],
+      inject: [JwtService],
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      useFactory: async (jwtService: JwtService) => ({
+        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        playground: false,
+        plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        context({ req }) {
+          // const token = req.headers.authorization?.replace('Bearer ', '');
+          // if (!token) throw new Error('token needed');
+          // const payload = jwtService.decode(token);
+          // if (!payload) throw new Error('token not valid');
+        },
+      }),
     }),
+
+    // todo: basic config
+    // GraphQLModule.forRoot<ApolloDriverConfig>({
+    //   driver: ApolloDriver,
+    //   autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    //   playground: false,
+    //   plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
+    // }),
     ItemsModule,
     UsersModule,
     AuthModule,
