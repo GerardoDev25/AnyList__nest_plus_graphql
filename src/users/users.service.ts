@@ -5,13 +5,13 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 import { SingnUpInput } from 'src/auth/dto/inputs';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ValidRoles } from 'src/auth/enums/valid-roles.enums';
 
 @Injectable()
@@ -42,6 +42,7 @@ export class UsersService {
         //   lastUpdateBy: true,
         // },
       });
+
     return this.usersRepository
       .createQueryBuilder()
       .andWhere('ARRAY[roles] && ARRAY[:...roles]')
@@ -70,8 +71,25 @@ export class UsersService {
     }
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(
+    id: string,
+    updateUserInput: UpdateUserInput,
+    updateBy: User,
+  ): Promise<User> {
+    // todo: updateBy
+
+    try {
+      const user = await this.usersRepository.preload({
+        ...updateUserInput,
+        id,
+      });
+
+      user.lastUpdateBy = updateBy;
+
+      return await this.usersRepository.save(user);
+    } catch (error) {
+      this.handleDBError(error);
+    }
   }
 
   async block(id: string, adminUser: User): Promise<User> {
