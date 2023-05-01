@@ -26,8 +26,11 @@ export class ItemsService {
     });
   }
 
-  async findOne(id: string): Promise<Item> {
-    const item = await this.itemRepository.findOneBy({ id });
+  async findOne(id: string, user: User): Promise<Item> {
+    const item = await this.itemRepository.findOneBy({
+      id,
+      user: { id: user.id },
+    });
 
     if (!item) {
       throw new NotFoundException(`item with id: "${id}" not found`);
@@ -35,16 +38,20 @@ export class ItemsService {
     return item;
   }
 
-  async update(id: string, updateItemInput: UpdateItemInput): Promise<Item> {
-    await this.findOne(id);
+  async update(
+    id: string,
+    updateItemInput: UpdateItemInput,
+    user: User,
+  ): Promise<Item> {
+    await this.findOne(id, user);
     const item = await this.itemRepository.preload(updateItemInput);
 
     return this.itemRepository.save(item);
   }
 
-  async remove(id: string): Promise<Item> {
+  async remove(id: string, user: User): Promise<Item> {
     // todo soft delete integration referencial
-    const item = await this.findOne(id);
+    const item = await this.findOne(id, user);
     await this.itemRepository.remove(item);
     return { ...item, id };
   }
