@@ -14,3 +14,7 @@
 4. weke up the image (docker needed) ```docker-compose up -d```
 
 5. wake up the backend of Nest ```yarn dev```
+
+6. go to  ```http://localhost:3000/graphql```
+
+7. execute the mutation  ```executeSeed``` to fill the database with information
