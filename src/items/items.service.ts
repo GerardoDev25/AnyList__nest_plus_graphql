@@ -5,7 +5,7 @@ import { CreateItemInput, UpdateItemInput } from './dto';
 import { Item } from './entities/item.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
-import { PaginationArgs } from 'src/common/dto/args/pagination-args';
+import { PaginationArgs } from 'src/common/dto/args';
 
 @Injectable()
 export class ItemsService {
