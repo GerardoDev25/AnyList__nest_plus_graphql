@@ -45,7 +45,7 @@ export class ItemsService {
       });
     }
 
-    return queryBuilder.getMany();
+    return await queryBuilder.getMany();
   }
 
   async findOne(id: string, user: User): Promise<Item> {
