@@ -17,6 +17,7 @@ type User {
   lastUpdateBy: User
   itemCount: Int!
   items(offset: Int = 0, limit: Int = 10, search: String): [Item!]!
+  listCount: Int!
   lists(offset: Int = 0, limit: Int = 10, search: String): [List!]!
 }
 

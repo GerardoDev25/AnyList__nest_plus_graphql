@@ -70,6 +70,8 @@ export class UsersResolver {
     return this.usersService.block(id, user);
   }
 
+  // ? Items
+
   @ResolveField(() => Int, { name: 'itemCount' })
   async itemCount(
     @CurrentUser([ValidRoles.admin]) adminUser: User,
@@ -88,14 +90,23 @@ export class UsersResolver {
     return await this.itemsService.findAll(user, paginationArgs, searchArgs);
   }
 
-  // todo: getListByUser
+  // ? List
+
+  @ResolveField(() => Int, { name: 'listCount' })
+  async listCount(
+    @CurrentUser([ValidRoles.admin]) adminUser: User,
+    @Parent() user: User,
+  ): Promise<number> {
+    return await this.listsService.listCountByUser(user);
+  }
+
   @ResolveField(() => [List], { name: 'lists' })
   async getListByUser(
     @CurrentUser([ValidRoles.admin]) adminUser: User,
     @Args() paginationArgs: PaginationArgs,
     @Args() searchArgs: SearchArgs,
     @Parent() user: User,
-  ): Promise<Item[]> {
+  ): Promise<List[]> {
     return await this.listsService.findAll(user, paginationArgs, searchArgs);
   }
 }
