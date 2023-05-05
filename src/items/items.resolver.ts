@@ -39,7 +39,7 @@ export class ItemsResolver {
     return this.itemsService.findOne(id, user);
   }
 
-  @Mutation(() => Item)
+  @Mutation(() => Item, { name: 'updateItem' })
   async updateItem(
     @Args('updateItemInput') updateItemInput: UpdateItemInput,
     @CurrentUser() user: User,
@@ -47,7 +47,7 @@ export class ItemsResolver {
     return this.itemsService.update(updateItemInput.id, updateItemInput, user);
   }
 
-  @Mutation(() => Item)
+  @Mutation(() => Item, { name: 'removeItem' })
   async removeItem(
     @Args('id', { type: () => ID }) id: string,
     @CurrentUser() user: User,
