@@ -4,7 +4,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Item } from 'src/items/entities/item.entity';
 import { List } from 'src/list/entities/list.entity';
 
-@Entity('list-items')
+@Entity('listItems')
 @ObjectType()
 export class ListItem {
   @PrimaryGeneratedColumn('uuid')
@@ -15,12 +15,13 @@ export class ListItem {
   @Field(() => Number)
   quantity: number;
 
-  @Column({ type: 'bool' })
+  @Column({ type: 'boolean' })
   @Field(() => Boolean)
   completed: boolean;
 
+  // Relaciones
   @ManyToOne(() => List, (list) => list.listItem, { lazy: true })
-  // @Field(() => List)
+  @Field(() => List)
   list: List;
 
   @ManyToOne(() => Item, (item) => item.listItem, { lazy: true })

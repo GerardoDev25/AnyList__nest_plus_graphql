@@ -8,6 +8,6 @@ import { ListItem } from './entities/list-item.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([ListItem])],
   providers: [ListItemResolver, ListItemService],
-  exports: [TypeOrmModule, ListItemService],
+  exports: [ListItemService, TypeOrmModule],
 })
 export class ListItemModule {}

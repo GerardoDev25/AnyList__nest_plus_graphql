@@ -32,5 +32,5 @@ export class List {
 
   @OneToMany(() => ListItem, (listItem) => listItem.list, { lazy: true })
   @Field(() => [ListItem])
-  listItem: ListItem;
+  listItem: ListItem[];
 }
