@@ -19,7 +19,7 @@ type List {
   id: ID!
   name: String!
   user: User!
-  listItem: [ListItem!]!
+  items: [ListItem!]!
 }
 
 type ListItem {
@@ -71,10 +71,10 @@ type Mutation {
   createList(createList: CreateListInput!): List!
   updateList(updateListInput: UpdateListInput!): List!
   removeList(id: ID!): List!
+  createListItem(createListItemInput: CreateListItemInput!): ListItem!
 
   """ejecuta la construccion de la db"""
   executeSeed: Boolean!
-  createListItem(createListItemInput: CreateListItemInput!): ListItem!
 }
 
 input SingnUpInput {
