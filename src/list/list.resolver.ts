@@ -6,6 +6,7 @@ import {
   ID,
   ResolveField,
   Parent,
+  Int,
 } from '@nestjs/graphql';
 import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
 
@@ -69,7 +70,16 @@ export class ListResolver {
   }
 
   @ResolveField(() => [ListItem], { name: 'items' })
-  async getListItems(@Parent() list: List): Promise<ListItem[]> {
-    return this.listItemService.findAll();
+  async getListItems(
+    @Parent() list: List,
+    @Args() paginationArgs: PaginationArgs,
+    @Args() searchArgs: SearchArgs,
+  ): Promise<ListItem[]> {
+    return this.listItemService.findAll(list, paginationArgs, searchArgs);
+  }
+
+  @ResolveField(() => Int, { name: 'totalItems' })
+  async countListItemByList(@Parent() list: List): Promise<number> {
+    return await this.listItemService.countListItemByList(list);
   }
 }
