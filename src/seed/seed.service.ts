@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Item } from 'src/items/entities/item.entity';
 import { User } from 'src/users/entities/user.entity';
-import { SEED_ITEMS, SEED_USERS } from './data/data-seed';
+import { SEED_ITEMS, SEED_LIST, SEED_USERS } from './data/data-seed';
 import { UsersService } from 'src/users/users.service';
 import { ItemsService } from 'src/items/items.service';
 import { List } from 'src/list/entities/list.entity';
@@ -50,6 +50,18 @@ export class SeedService {
 
     // ! crear items
     await this.loadItems(user);
+
+    // ! crear list
+    const list = await this.loadList(user);
+
+    // ! crear listItems
+    const items = await this.itemService.findAll(
+      user,
+      { limit: 15, offset: 3 },
+      {},
+    );
+    await this.loadListItems(list, items);
+
     return true;
   }
 
@@ -89,5 +101,25 @@ export class SeedService {
     await Promise.allSettled(items);
 
     return true;
+  }
+
+  async loadList(user: User): Promise<List> {
+    const lists = [];
+    for (const list of SEED_LIST) {
+      lists.push(await this.listService.create(list, user));
+    }
+
+    return lists[0];
+  }
+
+  async loadListItems(list: List, items: Item[]) {
+    for (const item of items) {
+      this.listItemService.create({
+        quantity: Math.round(Math.random() * 20),
+        completed: Math.round(Math.random() * 1) % 2 === 0,
+        listId: list.id,
+        itemId: item.id,
+      });
+    }
   }
 }
