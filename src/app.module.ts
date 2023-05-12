@@ -20,6 +20,10 @@ import { ListItemModule } from './list-item/list-item.module';
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
+      ssl:
+        process.env.STATE === 'prod'
+          ? { rejectUnauthorized: false, sslmode: 'register' }
+          : (false as any),
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
