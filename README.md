@@ -4,7 +4,7 @@
 
 
 
-# Backend Application for CRUD Operations
+# Backend Application for Items List
 
 This project is a backend application that provides CRUD (Create, Read, Update, Delete) operations for managing items, lists, and itemList entities. It also includes an authentication system with JSON Web Tokens (JWT), role-based authorization, pagination, and GraphQL API.
 
